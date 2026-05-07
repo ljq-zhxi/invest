@@ -1,0 +1,13 @@
+[project]
+name = "investment-analysis"
+version = "0.1.0"
+description = "AI investment persona and portfolio suitability analysis MVP service"
+requires-python = ">=3.11"
+dependencies = [
+  "pandas>=2.0",
+  "openpyxl>=3.1"
+]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
