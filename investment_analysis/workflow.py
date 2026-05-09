@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 
 from .cycles import build_position_cycles
+from .llm import build_llm_enrichment
 from .parser import normalize_holdings, normalize_market_data, parse_trade_file
 from .persona import generate_persona
 from .questions import generate_questions
@@ -36,7 +37,7 @@ def run_analysis(
     persona = generate_persona(user_id, account_id, selected, questions, answers or [])
     suitability = analyze_suitability(user_id, account_id, persona, holdings, selected) if holdings else None
     report = generate_report(persona, selected, questions, answers or [], suitability)
-    return dataclass_to_dict(
+    result = dataclass_to_dict(
         {
             "parse_result": {
                 "status": "SUCCESS" if trades else "FAILED",
@@ -51,8 +52,11 @@ def run_analysis(
             "candidate_segments": candidates,
             "selected_segments": selected,
             "questions": questions,
+            "answers": answers or [],
             "persona": persona,
             "suitability": suitability,
             "report": report,
         }
     )
+    result["llm_enrichment"] = build_llm_enrichment(result)
+    return result

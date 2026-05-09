@@ -21,10 +21,17 @@
 | uc006 | 生成报告索引 | HTTP POST | `/api/v1/reports/generate` | `spec/usecase/uc006_generate_report.md` |
 | uc007 | 获取 Markdown 报告 | HTTP GET | `/reports/{report_id}` | `spec/usecase/uc007_get_report.md` |
 | uc008 | 核心分析编排 | 内部函数 | `workflow.run_analysis` | `spec/usecase/uc008_core_analysis_workflow.md` |
+| uc009 | 生成行为片段总结 | HTTP POST | `/api/v1/llm/behavior-summary` | `spec/usecase/uc009_llm_behavior_summary.md` |
+| uc010 | 生成片段问题 | HTTP POST | `/api/v1/llm/questions/generate` | `spec/usecase/uc010_llm_questions_generate.md` |
+| uc011 | 理解用户自由文本回答 | HTTP POST | `/api/v1/llm/answers/understand` | `spec/usecase/uc011_llm_answers_understand.md` |
+| uc012 | 生成报告文本章节 | HTTP POST | `/api/v1/llm/reports/write` | `spec/usecase/uc012_llm_reports_write.md` |
+| uc013 | 合规检查与安全改写 | HTTP POST | `/api/v1/llm/compliance/check` | `spec/usecase/uc013_llm_compliance_check.md` |
+| uc014 | 验证码登录并创建用户 | HTTP POST | `/api/v1/auth/request-code`、`/api/v1/auth/verify-code` | `spec/usecase/uc014_auth_verify_code.md` |
+| uc015 | 查询登录用户历史报告 | HTTP GET | `/api/v1/reports` | `spec/usecase/uc015_list_user_reports.md` |
 
 ## 用例边界
 
-本服务的对外 HTTP 用例由 `InvestmentAnalysisHandler.do_GET` 和 `InvestmentAnalysisHandler.do_POST` 分发。`workflow.run_analysis` 是所有分析类接口复用的核心内部用例，覆盖交割单解析、持仓周期、行为片段、问题、人格、适配度和报告生成。
+本服务的对外 HTTP 用例由 `InvestmentAnalysisHandler.do_GET` 和 `InvestmentAnalysisHandler.do_POST` 分发。`workflow.run_analysis` 是所有分析类接口复用的核心内部用例，覆盖交割单解析、持仓周期、行为片段、问题、人格、适配度、报告生成和 LLM 回退增强结果。`/api/v1/llm/*` 用例按 PRD 的大模型 API 设计提供行为总结、问题生成、回答理解、报告撰写和合规检查能力；当前代码使用 `template-fallback` 本地适配器，保留真实大模型接入点。用户体系采用邮箱或手机号验证码登录，登录后分析报告按用户持久化为唯一报告 ID。
 
 ## 合规边界
 

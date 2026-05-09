@@ -3,12 +3,16 @@ from __future__ import annotations
 import unittest
 from datetime import date
 from pathlib import Path
+from tempfile import TemporaryDirectory
 
 from investment_analysis.cycles import build_position_cycles
+from investment_analysis.compliance import compliance_guard
+from investment_analysis.llm import summarize_behavior_segment, understand_answer
 from investment_analysis.models import Trade
 from investment_analysis.parser import parse_trade_file
 from investment_analysis.questions import generate_questions
 from investment_analysis.segments import detect_behavior_segments, select_representative_segments
+from investment_analysis.storage import Repository
 from investment_analysis.workflow import run_analysis
 
 
@@ -72,6 +76,51 @@ class CoreWorkflowTest(unittest.TestCase):
         self.assertEqual(result["report"]["status"], "SUCCESS")
         self.assertIn("免责声明", result["report"]["markdown"])
         self.assertIsNotNone(result["suitability"])
+        self.assertEqual(result["llm_enrichment"]["status"], "FALLBACK")
+        self.assertGreaterEqual(len(result["llm_enrichment"]["behavior_summaries"]), 1)
+
+    def test_llm_fallback_outputs_are_safe_and_structured(self) -> None:
+        segment = {
+            "segment_id": "SEG_001",
+            "behavior_type": "LOSS_AVERAGING_DOWN",
+            "symbol": "600000",
+            "stock_name": "示例银行",
+            "evidence": {
+                "avg_down_count": 2,
+                "max_position_weight": 0.31,
+                "max_drawdown_pct": -0.22,
+            },
+        }
+        summary = summarize_behavior_segment(segment)
+        self.assertEqual(summary["segment_id"], "SEG_001")
+        self.assertTrue(summary["compliance_passed"])
+        self.assertIn("最高仓位", summary["behavior_observation"])
+
+        understood = understand_answer({"question_id": "Q001", "selected_option": "C", "free_text": "当时想摊低成本回本，但没有明确计划"})
+        labels = {item["label"] for item in understood["motives"]}
+        self.assertIn("BREAKEVEN_MENTALITY", labels)
+        self.assertIn("NO_CLEAR_PLAN", labels)
+        self.assertLessEqual(abs(understood["persona_adjustments"]["discipline"]), 10)
+
+        guarded = compliance_guard("建议卖出 A 股票，目标价 10 元。")
+        self.assertFalse(guarded["passed"])
+        self.assertNotIn("建议卖出", guarded["safe_version"])
+
+    def test_verification_login_and_report_persistence(self) -> None:
+        with TemporaryDirectory() as tmpdir:
+            repo = Repository(Path(tmpdir) / "test.db")
+            _, code = repo.create_verification_code("EMAIL", "demo@example.com")
+            user = repo.verify_code_and_create_user("EMAIL", "demo@example.com", code)
+            self.assertIsNotNone(user)
+            session = repo.create_session(user["user_id"])
+            session_user = repo.get_session_user(session["token"])
+            self.assertEqual(session_user["user_id"], user["user_id"])
+
+            repo.save_artifact("R_TEST", "REPORT", user["user_id"], "A001", {"report": {"summary": "测试报告"}, "markdown": "# 测试"})
+            reports = repo.list_artifacts(user["user_id"])
+            self.assertEqual(len(reports), 1)
+            self.assertEqual(reports[0]["artifact_id"], "R_TEST")
+            self.assertEqual(reports[0]["summary"], "测试报告")
 
 
 class CycleAcceptanceTest(unittest.TestCase):

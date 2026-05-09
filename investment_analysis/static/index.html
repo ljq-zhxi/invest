@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>AI 投资人格与持仓适配分析</title>
+    <link rel="stylesheet" href="/static/styles.css">
+  </head>
+  <body>
+    <header class="topbar">
+      <div>
+        <h1>投资人格与持仓适配分析</h1>
+        <p>交割单驱动的行为画像、风险冲突和报告工作台</p>
+      </div>
+      <div class="top-actions">
+        <div class="auth-box" id="authBox">
+          <input id="contactInput" placeholder="邮箱或手机号" autocomplete="username">
+          <button id="sendCodeBtn" type="button">获取验证码</button>
+          <input id="codeInput" placeholder="验证码" autocomplete="one-time-code">
+          <button id="loginBtn" type="button">登录</button>
+        </div>
+        <div class="user-box hidden" id="userBox">
+          <span id="userLabel"></span>
+          <button id="logoutBtn" type="button">退出</button>
+        </div>
+        <div class="status" id="serviceStatus">检查服务中</div>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="panel input-panel">
+        <div class="section-title">
+          <h2>分析输入</h2>
+          <button id="loadExampleBtn" type="button">填入示例</button>
+        </div>
+
+        <label>
+          用户 ID
+          <input id="userId" value="U001" autocomplete="off">
+        </label>
+        <label>
+          账户 ID
+          <input id="accountId" value="A001" autocomplete="off">
+        </label>
+        <label>
+          交割单路径
+          <input id="tradeFilePath" value="examples/trades.csv" autocomplete="off">
+        </label>
+        <label>
+          账户资产
+          <input id="accountAsset" type="number" value="60000" min="0" step="1000">
+        </label>
+
+        <label>
+          当前持仓 JSON
+          <textarea id="holdingsInput" spellcheck="false"></textarea>
+        </label>
+
+        <div class="button-row">
+          <button id="runBtn" class="primary" type="button">一键分析</button>
+          <button id="clearBtn" type="button">清空结果</button>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="section-title compact">
+          <h2>合规检查</h2>
+        </div>
+        <label>
+          待检查文本
+          <textarea id="complianceText" spellcheck="false">建议卖出 A 股票，目标价 10 元。</textarea>
+        </label>
+        <button id="checkComplianceBtn" type="button">检查文本</button>
+        <pre id="complianceResult" class="mini-output"></pre>
+      </section>
+
+      <section class="workspace">
+        <nav class="tabs" aria-label="结果视图">
+          <button class="tab active" data-tab="overview" type="button">总览</button>
+          <button class="tab" data-tab="segments" type="button">行为片段</button>
+          <button class="tab" data-tab="questions" type="button">问题</button>
+          <button class="tab" data-tab="report" type="button">报告</button>
+          <button class="tab" data-tab="history" type="button">历史报告</button>
+          <button class="tab" data-tab="raw" type="button">原始 JSON</button>
+        </nav>
+
+        <div id="message" class="message hidden"></div>
+
+        <section id="overview" class="tab-view active">
+          <div class="metrics">
+            <div class="metric">
+              <span>解析状态</span>
+              <strong id="parseStatus">--</strong>
+            </div>
+            <div class="metric">
+              <span>有效交易</span>
+              <strong id="validRows">--</strong>
+            </div>
+            <div class="metric">
+              <span>代表片段</span>
+              <strong id="segmentCount">--</strong>
+            </div>
+            <div class="metric">
+              <span>适配分</span>
+              <strong id="suitabilityScore">--</strong>
+            </div>
+          </div>
+
+          <div class="split">
+            <div class="panel">
+              <h2>人格画像</h2>
+              <div id="personaBox" class="empty">等待分析结果</div>
+            </div>
+            <div class="panel">
+              <h2>LLM 状态</h2>
+              <div id="llmBox" class="empty">等待分析结果</div>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h2>风险冲突</h2>
+            <ul id="conflictList" class="list"></ul>
+          </div>
+        </section>
+
+        <section id="segments" class="tab-view">
+          <div id="segmentsList" class="cards"></div>
+        </section>
+
+        <section id="questions" class="tab-view">
+          <div id="questionsList" class="cards"></div>
+        </section>
+
+        <section id="report" class="tab-view">
+          <div class="panel report-panel">
+            <div class="section-title">
+              <h2>Markdown 报告</h2>
+              <a id="reportLink" href="/reports/R_001" target="_blank" rel="noreferrer">打开原文</a>
+            </div>
+            <div id="reportMarkdown" class="markdown empty">等待分析结果</div>
+          </div>
+        </section>
+
+        <section id="history" class="tab-view">
+          <div class="panel">
+            <div class="section-title">
+              <h2>历史报告</h2>
+              <button id="refreshReportsBtn" type="button">刷新</button>
+            </div>
+            <div id="reportHistory" class="cards"></div>
+          </div>
+        </section>
+
+        <section id="raw" class="tab-view">
+          <pre id="rawJson" class="raw-output"></pre>
+        </section>
+      </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>

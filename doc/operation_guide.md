@@ -4,10 +4,11 @@
 
 本项目是一个 Python MVP 服务，用于基于用户交割单和当前持仓生成投资行为画像、个性化追问、持仓适配度分析和结构化报告。
 
-当前实现采用“规则引擎 + 可替换 LLM 层”的结构：
+当前实现采用“规则引擎 + LLM 适配层”的结构：
 
 - 规则引擎负责交割单解析、字段映射、持仓周期构建、行为片段识别、代表性片段筛选、人格评分和持仓适配度评分。
-- 报告、问题和摘要当前由可审计模板生成，后续可替换为 LLM Agent。
+- LLM 适配层负责行为片段总结、片段问题生成、自由文本回答理解、报告章节生成和合规检查。
+- 默认不调用外部大模型，使用 `template-fallback` 本地模板回退；配置 `LLM_PROVIDER`、`LLM_MODEL`、`LLM_API_KEY` 后，可调用 OpenAI-compatible Chat Completions。
 - HTTP 服务使用 Python 标准库 `http.server` 实现，不依赖 FastAPI。
 - 数据持久化使用本地 SQLite，默认数据库文件为 `investment_analysis.db`。
 
@@ -93,9 +94,37 @@ curl http://127.0.0.1:8000/health
 }
 ```
 
-### 4.2 一键运行完整分析
+### 4.2 浏览器界面
 
-一键接口适合本地调试和 MVP 验证。它不需要先上传文件，直接传入本地交割单路径。
+服务启动后，浏览器打开：
+
+```text
+http://127.0.0.1:8000/
+```
+
+页面提供：
+
+- 邮箱或手机号验证码登录。
+- 一键分析输入区：用户 ID、账户 ID、交割单路径、账户资产、当前持仓 JSON。
+- 结果总览：解析状态、有效交易数、代表片段数、适配分。
+- 行为片段、问题、报告、历史报告和原始 JSON 标签页。
+- 合规检查文本框。
+
+如果需要手机在同一局域网访问，启动时绑定所有网卡：
+
+```bash
+python3 -m investment_analysis.api --host 0.0.0.0 --port 8000
+```
+
+然后在手机访问电脑的局域网 IP，例如：
+
+```text
+http://192.168.1.23:8000/
+```
+
+### 4.3 一键运行完整分析
+
+一键接口适合本地调试和 MVP 验证。它不需要先上传文件，直接传入本地交割单路径。如果请求带上 `Authorization: Bearer <token>`，服务会使用登录用户 ID 保存分析产物和报告，并返回唯一 `analysis_id`、`report_id`、`report_url`。未登录时仍保留本地 MVP 的 `JOB_DIRECT` 和 `R_001` 行为。
 
 ```bash
 curl -X POST http://127.0.0.1:8000/api/v1/analysis/run \
@@ -137,6 +166,7 @@ curl -X POST http://127.0.0.1:8000/api/v1/analysis/run \
 | `persona` | 投资人格画像和 10 维得分 |
 | `suitability` | 当前持仓适配度，未提供持仓时为 `null` |
 | `report` | 结构化报告和 Markdown 报告 |
+| `llm_enrichment` | LLM/模板回退增强结果，包含行为总结、回答理解和报告章节 |
 
 一键接口会保存两个固定产物：
 
@@ -145,7 +175,52 @@ curl -X POST http://127.0.0.1:8000/api/v1/analysis/run \
 | `JOB_DIRECT` | `ANALYSIS` | 完整分析结果 |
 | `R_001` | `REPORT` | 报告对象 |
 
-### 4.3 分步调用流程
+### 4.4 用户验证与历史报告
+
+#### 请求验证码
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/v1/auth/request-code \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "contact": "demo@example.com"
+  }'
+```
+
+本地开发版本会返回 `dev_code`，便于无短信/邮件服务时调试。生产环境接入短信或邮件服务后，应去掉 `dev_code`，只返回发送状态。
+
+#### 验证登录
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/v1/auth/verify-code \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "contact": "demo@example.com",
+    "code": "123456"
+  }'
+```
+
+响应包含 `user`、`token` 和 `expires_at`。后续请求使用：
+
+```bash
+Authorization: Bearer 你的token
+```
+
+#### 查看当前用户
+
+```bash
+curl http://127.0.0.1:8000/api/v1/me \
+  -H 'Authorization: Bearer 你的token'
+```
+
+#### 查看历史报告
+
+```bash
+curl http://127.0.0.1:8000/api/v1/reports \
+  -H 'Authorization: Bearer 你的token'
+```
+
+### 4.5 分步调用流程
 
 分步流程更接近 PRD 中的产品链路。
 
@@ -214,6 +289,115 @@ curl -X POST http://127.0.0.1:8000/api/v1/reports/generate \
 ```bash
 curl http://127.0.0.1:8000/reports/R_001
 ```
+
+### 4.6 LLM 适配层接口
+
+当前 LLM 接口按 PRD 提供同名能力，默认使用本地 `template-fallback`。如果配置了真实模型环境变量，则优先调用 OpenAI-compatible Chat Completions；调用失败、JSON 不合法或合规检查不通过时自动回退到模板。内置兼容 `openai`、`deepseek`、`minimax`、`xiaomi/mimo/mino`。
+
+真实模型配置：
+
+```bash
+export LLM_PROVIDER=openai
+export LLM_MODEL=gpt-4o-mini
+export LLM_API_KEY=你的token
+export LLM_API_BASE=https://api.openai.com/v1
+export LLM_TIMEOUT_SECONDS=20
+```
+
+兼容 OpenAI 协议的服务可以把 `LLM_PROVIDER` 设置为 `openai-compatible`，并修改 `LLM_API_BASE`。
+
+常用 provider 预设：
+
+| Provider | 默认 Base URL | 默认模型 | Token 环境变量 |
+|---|---|---|---|
+| `openai` | `https://api.openai.com/v1` | `gpt-4o-mini` | `LLM_API_KEY` 或 `OPENAI_API_KEY` |
+| `deepseek` | `https://api.deepseek.com` | `deepseek-chat` | `LLM_API_KEY` 或 `DEEPSEEK_API_KEY` |
+| `minimax` | `https://api.minimax.io/v1` | `MiniMax-M2.7` | `LLM_API_KEY` 或 `MINIMAX_API_KEY` |
+| `xiaomi` / `mimo` / `mino` | `https://api.xiaomimimo.com/v1` | `xiaomi/mimo-v2-flash` | `LLM_API_KEY` 或 `XIAOMI_API_KEY` |
+
+DeepSeek 示例：
+
+```bash
+export LLM_PROVIDER=deepseek
+export DEEPSEEK_API_KEY=你的token
+export LLM_MODEL=deepseek-chat
+```
+
+MiniMax 示例：
+
+```bash
+export LLM_PROVIDER=minimax
+export MINIMAX_API_KEY=你的token
+export LLM_MODEL=MiniMax-M2.7
+```
+
+小米 MiMo/Mino 示例：
+
+```bash
+export LLM_PROVIDER=xiaomi
+export XIAOMI_API_KEY=你的token
+export LLM_MODEL=xiaomi/mimo-v2-flash
+```
+
+使用这些接口前，通常需要先执行一键分析或分步解析，让数据库中存在 `JOB_DIRECT` 或指定 `parse_job_id`。
+
+#### 生成行为片段总结
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/v1/llm/behavior-summary \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "parse_job_id": "JOB_DIRECT",
+    "segment_id": "SEG_001"
+  }'
+```
+
+#### 生成片段问题
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/v1/llm/questions/generate \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "parse_job_id": "JOB_DIRECT",
+    "segment_ids": ["SEG_001"],
+    "question_count_per_segment": 3
+  }'
+```
+
+#### 理解用户自由文本回答
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/v1/llm/answers/understand \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "parse_job_id": "JOB_DIRECT",
+    "question_id": "Q002",
+    "selected_option": "C",
+    "free_text": "当时主要想摊低成本，等反弹回本。"
+  }'
+```
+
+#### 生成报告文本章节
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/v1/llm/reports/write \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "parse_job_id": "JOB_DIRECT"
+  }'
+```
+
+#### 合规检查与安全改写
+
+```bash
+curl -X POST http://127.0.0.1:8000/api/v1/llm/compliance/check \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "text": "建议卖出 A 股票，目标价 10 元。"
+  }'
+```
+
+预期返回 `passed=false`，并在 `safe_version` 中给出安全改写。
 
 ## 5. 输入数据格式
 
@@ -287,6 +471,7 @@ curl http://127.0.0.1:8000/reports/R_001
 | 路径 | 说明 |
 |---|---|
 | `investment_analysis/api.py` | HTTP 服务入口、路由分发、请求响应处理 |
+| `investment_analysis/static/` | 浏览器前端页面、样式和交互脚本 |
 | `investment_analysis/workflow.py` | 核心分析编排 |
 | `investment_analysis/parser.py` | 文件读取、字段映射、交易/持仓/行情标准化 |
 | `investment_analysis/cycles.py` | 持仓周期构建 |
@@ -296,6 +481,7 @@ curl http://127.0.0.1:8000/reports/R_001
 | `investment_analysis/suitability.py` | 当前持仓适配度分析 |
 | `investment_analysis/report.py` | 结构化报告和 Markdown 报告生成 |
 | `investment_analysis/compliance.py` | 合规表达检查与清洗 |
+| `investment_analysis/llm.py` | LLM 适配层、模板回退、动机标签提取和报告章节生成 |
 | `investment_analysis/storage.py` | SQLite 上传记录和分析产物存储 |
 | `tests/test_core.py` | 核心流程测试 |
 | `examples/trades.csv` | 示例交割单 |
@@ -362,16 +548,57 @@ curl http://127.0.0.1:8000/reports/R_001
 - 避免输出“建议买入”“建议卖出”“应该加仓”“应该减仓”等表达。
 - 如新增报告章节，建议先经过 `compliance_check`。
 
-### 6.7 数据库维护
+### 6.7 修改或接入真实 LLM
+
+LLM 适配层在 `investment_analysis/llm.py`，默认模型名为 `template-fallback`，Prompt 版本为 `llm-prompt-v1`。真实模型通过环境变量配置：
+
+| 变量 | 必填 | 默认值 | 说明 |
+|---|---|---|---|
+| `LLM_PROVIDER` | 否 | `template` | `template`、`openai`、`openai-compatible`、`deepseek`、`minimax`、`xiaomi`、`mimo`、`mino` |
+| `LLM_MODEL` | 否 | `gpt-4o-mini` | 真实模型名称 |
+| `LLM_API_KEY` | 真实模型必填 | 空 | 模型服务 token；未配置时自动 fallback |
+| `OPENAI_API_KEY` | 否 | 空 | `LLM_API_KEY` 未配置时作为备选 |
+| `DEEPSEEK_API_KEY` | 否 | 空 | DeepSeek token |
+| `MINIMAX_API_KEY` | 否 | 空 | MiniMax token |
+| `XIAOMI_API_KEY` | 否 | 空 | 小米 MiMo/Mino token |
+| `LLM_API_BASE` | 否 | `https://api.openai.com/v1` | OpenAI-compatible API base URL |
+| `LLM_TIMEOUT_SECONDS` | 否 | `20` | 请求超时时间 |
+
+维护原则：
+
+- 真实模型只能负责语义理解、追问、解释和合规润色。
+- 真实模型不能直接计算收益率、回撤、仓位等金融指标。
+- 真实模型不能直接判定人格标签或持仓适配分。
+- 模型输出必须保持当前 API Schema。
+- 模型输出必须先做结构校验，再做合规检查。
+- 模型失败、超时、JSON 不合法或合规不通过时，必须回退到当前模板逻辑。
+
+当前已接入 OpenAI-compatible 调用点，推荐继续围绕以下函数维护：
+
+| 函数 | 说明 |
+|---|---|
+| `summarize_behavior_segment` | 行为片段总结 |
+| `generate_segment_questions` | 片段问题生成 |
+| `understand_answer` | 自由文本回答理解 |
+| `write_report_sections` | 报告章节生成 |
+| `compliance_guard` | 合规检查和安全改写 |
+
+### 6.8 数据库维护
 
 默认数据库文件为 `investment_analysis.db`，启动服务后自动创建。
 
-当前包含两张表：
+当前包含以下核心表：
 
 | 表 | 说明 |
 |---|---|
 | `uploads` | 上传文件记录 |
 | `artifacts` | 分析产物和报告产物 |
+| `users` | 邮箱或手机号用户 |
+| `verification_codes` | 一次性验证码，默认 10 分钟过期 |
+| `sessions` | Bearer token 会话 |
+| `llm_tasks` | LLM/模板回退任务输入、输出、模型名、Prompt 版本和状态 |
+| `llm_compliance_results` | 合规检查结果、违规项和安全改写 |
+| `answer_motive_labels` | 用户回答动机标签和置信度 |
 
 开发调试时如需使用干净数据库，可以换一个 `--db` 路径启动服务，例如：
 
@@ -572,12 +799,21 @@ python3 -m investment_analysis.api --host 127.0.0.1 --port 8001
 | 用途 | 方法 | 路径 |
 |---|---|---|
 | 健康检查 | GET | `/health` |
+| 请求验证码 | POST | `/api/v1/auth/request-code` |
+| 验证登录 | POST | `/api/v1/auth/verify-code` |
+| 当前用户 | GET | `/api/v1/me` |
+| 历史报告 | GET | `/api/v1/reports` |
 | 上传交割单 | POST | `/api/v1/uploads/trade-statement` |
 | 解析交割单 | POST | `/api/v1/trades/parse` |
 | 查询解析结果 | GET | `/api/v1/trades/parse-result/{parse_job_id}` |
 | 一键分析 | POST | `/api/v1/analysis/run` |
 | 生成报告 | POST | `/api/v1/reports/generate` |
 | 获取报告 | GET | `/reports/{report_id}` |
+| 生成行为片段总结 | POST | `/api/v1/llm/behavior-summary` |
+| 生成片段问题 | POST | `/api/v1/llm/questions/generate` |
+| 理解用户回答 | POST | `/api/v1/llm/answers/understand` |
+| 生成报告章节 | POST | `/api/v1/llm/reports/write` |
+| 合规检查 | POST | `/api/v1/llm/compliance/check` |
 
 ### 7.17 JSON 请求解析失败
 
@@ -599,15 +835,50 @@ python3 -m investment_analysis.api --host 127.0.0.1 --port 8001
 - 检查 `investment_analysis/compliance.py` 的禁止表达规则。
 - 保持“风险提示”“适配分析”“建议关注方向”等表达，不写具体买卖、加减仓指令。
 
+### 7.19 LLM 接口返回 `analysis artifact not found`
+
+原因：LLM 接口需要读取分析产物，但当前数据库中没有 `JOB_DIRECT` 或请求指定的 `parse_job_id`。
+
+解决：
+
+- 先调用 `/api/v1/analysis/run` 生成 `JOB_DIRECT`。
+- 或先完成上传和解析流程，使用 `/api/v1/trades/parse` 返回的 `parse_job_id`。
+- 确认 LLM 接口和分析接口使用同一个 `--db` 数据库文件。
+
+### 7.20 LLM 接口返回 `segment_id not found`
+
+原因：请求的片段 ID 不在分析产物的 `selected_segments` 或 `candidate_segments` 中。
+
+解决：
+
+- 先查看 `/api/v1/analysis/run` 响应中的片段 ID。
+- 使用存在的 `SEG_001`、`SEG_002` 等 ID。
+- 如果没有片段，说明样本交易不足或未触发行为识别规则。
+
+### 7.21 LLM 输出一直显示 `template-fallback`
+
+这是默认行为，表示服务正在使用本地模板回退。
+
+如果你希望调用真实模型，请检查：
+
+- 是否设置 `LLM_PROVIDER=openai/deepseek/minimax/xiaomi/mimo/mino`。
+- 是否设置对应 token，例如 `LLM_API_KEY`、`DEEPSEEK_API_KEY`、`MINIMAX_API_KEY` 或 `XIAOMI_API_KEY`。
+- `LLM_MODEL` 是否是服务支持的模型名。
+- `LLM_API_BASE` 是否正确。
+- 当前运行进程是否能访问模型服务网络。
+
+真实模型调用失败、输出不是合法 JSON、必填字段缺失或合规不通过时，也会自动回退到 `template-fallback`。
+
 ## 8. 发布或交付前检查清单
 
 1. 执行 `python3 -m unittest discover -s tests`，确认测试通过。
 2. 使用 `examples/trades.csv` 跑通一键分析。
 3. 确认报告包含免责声明。
 4. 确认输出不包含具体买卖建议。
-5. 如改动接口，更新 `README.md` 和 `spec/usecases.md`。
+5. 如改动接口，更新 `README.md`、`doc/operation_guide.md` 和 `spec/usecases.md`。
 6. 如改动行为识别，更新或新增对应测试。
 7. 如改动字段映射，使用至少一份 CSV 和一份 Excel 样例验证。
+8. 如改动 LLM 适配层，确认 `llm_tasks` 正常写入，且失败时可回退。
 
 ## 9. 后续可优化方向
 

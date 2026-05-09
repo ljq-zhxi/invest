@@ -35,6 +35,7 @@
 | 人格模块 | 生成投资人格画像 |
 | 适配模块 | 分析当前持仓与人格的适配度 |
 | 报告模块 | 生成结构化报告和 Markdown |
+| LLM 适配层 | 生成行为总结、回答理解和报告章节的回退增强结果 |
 
 ## 2. 输入输出
 
@@ -66,6 +67,7 @@
 | persona | object | 人格画像、维度分和置信度 |
 | suitability | object/null | 持仓适配度；未提供持仓时为空 |
 | report | object | 报告结构、Markdown、合规检查结果 |
+| llm_enrichment | object | LLM/模板回退增强结果，包含行为总结、回答理解和报告章节 |
 
 ## 3. 主流程
 
@@ -80,7 +82,8 @@
 8. 调用 generate_persona 综合行为证据与用户回答生成人格画像。
 9. 若存在当前持仓，调用 analyze_suitability 生成持仓适配度。
 10. 调用 generate_report 生成结构化报告和 Markdown。
-11. 将所有 dataclass 转换为字典后返回。
+11. 调用 build_llm_enrichment 生成 LLM 回退增强结果。
+12. 将所有 dataclass 转换为字典后返回。
 ```
 
 ## 4. 业务规则
@@ -96,6 +99,8 @@
 | 人格画像 | 基于行为片段 70% 与回答修正 30% 融合生成 10 维得分 |
 | 持仓适配 | 只有提供当前持仓时才计算；主要评估风险匹配、行为匹配、集中度和可持续性 |
 | 合规检查 | 报告必须包含免责声明，并清理可能构成投资建议的表达 |
+| LLM 回退 | 当前使用 `template-fallback` 本地适配器，不依赖外部大模型服务 |
+| LLM 边界 | LLM 只能改写表达和提取动机标签，不能直接计算指标、判定人格或决定适配分 |
 
 ## 5. 异常流程
 
@@ -117,6 +122,7 @@
 | Persona | persona | 投资人格画像 |
 | Suitability | suitability | 当前持仓适配度 |
 | Report | report | 报告结构和 Markdown 文本 |
+| llm_enrichment | llm | 行为片段总结、回答理解、报告章节回退结果 |
 
 ## 7. 关联代码
 
@@ -130,6 +136,7 @@
 | `investment_analysis/persona.py` | 人格画像生成 |
 | `investment_analysis/suitability.py` | 持仓适配度分析 |
 | `investment_analysis/report.py` | 报告生成与合规处理 |
+| `investment_analysis/llm.py` | LLM 适配层与模板回退 |
 
 ## 8. 验收标准
 
@@ -139,3 +146,4 @@
 4. 提供回答时，人格画像分数会根据回答进行修正。
 5. 提供当前持仓时，生成非空 `suitability`。
 6. 报告 Markdown 包含免责声明，且不包含具体买卖建议。
+7. 完整分析结果包含 `llm_enrichment.status=FALLBACK`。
