@@ -32,6 +32,33 @@ class CoreWorkflowTest(unittest.TestCase):
         self.assertEqual(bank.status, "OPEN")
         self.assertGreater(bank.max_position_weight, 0.5)
 
+    def test_parse_broker_statement_with_chinese_headers(self) -> None:
+        with TemporaryDirectory() as tmpdir:
+            statement = Path(tmpdir) / "broker_statement.csv"
+            statement.write_text(
+                "\ufeff成交日期,成交时间,证券代码,证券名称,操作,成交数量,成交编号,成交均价,成交金额,本次余额,"
+                "股票余额,发生金额,交易佣金,印花税,其他费用,资金余额,本次金额,合同编号,市场名称,证管费,经手费,过户费\n"
+                "20260508,10:00:26,002602,世纪华通,证券买入,600,0101000025,16.36,9816,600,"
+                "600,-9816.94,0.31,0,0,21272.64,21272.64,0101000025,深圳 A 股,0.2,0.33,0.1\n",
+                encoding="utf-8",
+            )
+
+            trades, warnings, invalid = parse_trade_file(statement, "U001", "A001", "FILE_BROKER")
+
+        self.assertEqual(invalid, [])
+        self.assertEqual(len(trades), 1)
+        trade = trades[0]
+        self.assertEqual(trade.trade_date.date().isoformat(), "2026-05-08")
+        self.assertEqual(trade.symbol, "002602")
+        self.assertEqual(trade.stock_name, "世纪华通")
+        self.assertEqual(trade.side, "BUY")
+        self.assertEqual(trade.quantity, 600)
+        self.assertEqual(trade.price, 16.36)
+        self.assertEqual(trade.gross_amount, 9816)
+        self.assertAlmostEqual(trade.fee, 0.94)
+        self.assertEqual(trade.tax, 0)
+        self.assertTrue(any("主动交易笔数" in warning for warning in warnings))
+
     def test_loss_averaging_and_concentration_segments(self) -> None:
         trades, _, _ = parse_trade_file(ROOT / "examples" / "trades.csv", "U001", "A001", "FILE_001")
         cycles = build_position_cycles(trades, as_of=date(2025, 5, 7), account_asset=60000)

@@ -17,6 +17,8 @@ def parse_date(value: Any) -> datetime:
     text = str(value).strip()
     if not text:
         raise ValueError("empty date")
+    if text.endswith(".0") and text[:-2].isdigit():
+        text = text[:-2]
     for fmt in ("%Y-%m-%d %H:%M:%S", "%Y-%m-%d", "%Y/%m/%d", "%Y%m%d", "%Y.%m.%d"):
         try:
             return datetime.strptime(text, fmt)

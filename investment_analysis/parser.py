@@ -18,10 +18,13 @@ FIELD_ALIASES: dict[str, list[str]] = {
     "quantity": ["quantity", "成交数量", "数量", "发生数量"],
     "price": ["price", "成交价格", "价格", "成交均价"],
     "gross_amount": ["gross_amount", "成交金额", "发生金额", "金额"],
-    "fee": ["fee", "手续费", "佣金", "费用"],
+    "fee": ["fee", "手续费", "交易佣金", "佣金", "费用"],
     "tax": ["tax", "印花税", "税费"],
+    "net_amount": ["net_amount", "本次金额", "发生金额", "资金金额"],
     "trade_type": ["trade_type", "交易类型", "业务类型", "摘要"],
 }
+
+FEE_COMPONENT_ALIASES = ["手续费", "交易佣金", "佣金", "其他费用", "证管费", "经手费", "过户费"]
 
 SIDE_MAPPING = {
     "买入": "BUY",
@@ -48,14 +51,21 @@ INACTIVE_TRADE_TYPES = {
 
 
 def infer_field_mapping(columns: list[str]) -> dict[str, str]:
-    normalized = {str(col).strip().lower(): str(col) for col in columns}
+    normalized = {normalize_column_name(col).lower(): str(col) for col in columns}
     mapping: dict[str, str] = {}
     for standard, aliases in FIELD_ALIASES.items():
         for alias in aliases:
-            if alias.lower() in normalized:
-                mapping[normalized[alias.lower()]] = standard
+            normalized_alias = normalize_column_name(alias).lower()
+            if normalized_alias in normalized:
+                raw_column = normalized[normalized_alias]
+                if raw_column not in mapping:
+                    mapping[raw_column] = standard
                 break
     return mapping
+
+
+def normalize_column_name(value: Any) -> str:
+    return "".join(str(value).replace("\ufeff", "").split())
 
 
 def read_tabular_file(path: str | Path) -> list[dict[str, Any]]:
@@ -112,16 +122,14 @@ def normalize_trades(
             side = normalize_side(get("side"))
             quantity = to_float(get("quantity"))
             price = to_float(get("price"))
-            gross_amount = to_float(get("gross_amount"), quantity * price)
-            fee = to_float(get("fee"), 0.0)
+            gross_amount = abs(to_float(get("gross_amount"), quantity * price))
+            fee = extract_fee(row, get("fee"))
             tax = to_float(get("tax"), 0.0)
             trade_type = str(get("trade_type", "") or "").strip()
             if quantity <= 0:
                 raise ValueError("quantity must be positive")
             if price <= 0:
                 raise ValueError("price must be positive")
-            if gross_amount < 0:
-                warnings.append(f"row {row_index}: gross_amount < 0, kept for review")
 
             stable_key = "|".join([source_file_id, str(row_index), symbol, side, trade_date.isoformat()])
             trade_id = "T_" + hashlib.sha1(stable_key.encode("utf-8")).hexdigest()[:12].upper()
@@ -154,6 +162,15 @@ def normalize_trades(
     if active_count < 10:
         warnings.append("主动交易笔数少于 10 笔，分析可信度较低")
     return trades, warnings, invalid_rows
+
+
+def extract_fee(row: dict[str, Any], mapped_fee: Any = None) -> float:
+    explicit_fee = to_float(mapped_fee, 0.0)
+    component_fee = 0.0
+    for raw_key, value in row.items():
+        if normalize_column_name(raw_key) in FEE_COMPONENT_ALIASES:
+            component_fee += to_float(value, 0.0)
+    return component_fee if component_fee > 0 else explicit_fee
 
 
 def parse_trade_file(

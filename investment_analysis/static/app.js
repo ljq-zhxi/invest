@@ -191,14 +191,19 @@ async function checkCompliance() {
 }
 
 function renderResult(result) {
+  const selectedSegments = result.selected_segments || [];
+  const candidateSegments = result.candidate_segments || [];
+  const displaySegments = selectedSegments.length ? selectedSegments : candidateSegments;
+  const showingCandidates = selectedSegments.length === 0 && candidateSegments.length > 0;
+
   $("parseStatus").textContent = result.parse_result?.status || "--";
   $("validRows").textContent = result.parse_result?.valid_rows ?? "--";
-  $("segmentCount").textContent = result.selected_segments?.length ?? "--";
+  $("segmentCount").textContent = displaySegments.length;
   $("suitabilityScore").textContent = result.suitability?.scores?.overall_suitability_score ?? "--";
   renderPersona(result.persona);
   renderLlm(result.llm_enrichment);
   renderConflicts(result.suitability?.risk_conflicts || []);
-  renderSegments(result.selected_segments || [], result.llm_enrichment?.behavior_summaries || []);
+  renderSegments(displaySegments, result.llm_enrichment?.behavior_summaries || [], showingCandidates);
   renderQuestions(result.questions || []);
   renderMarkdown(result.report?.markdown || "");
   $("rawJson").textContent = formatJson(result);
@@ -255,9 +260,10 @@ function renderConflicts(conflicts) {
   }
 }
 
-function renderSegments(segments, summaries) {
+function renderSegments(segments, summaries, showingCandidates = false) {
   const byId = new Map(summaries.map((item) => [item.segment_id, item]));
   const target = $("segmentsList");
+  $("segmentsTitle").textContent = showingCandidates ? "可复盘行为线索" : "代表性行为片段";
   target.innerHTML = "";
   if (!segments.length) {
     target.innerHTML = "<div class=\"empty\">暂无代表性行为片段</div>";
@@ -337,6 +343,7 @@ function clearResult() {
   $("personaBox").textContent = "等待分析结果";
   $("llmBox").textContent = "等待分析结果";
   $("conflictList").innerHTML = "";
+  $("segmentsTitle").textContent = "代表性行为片段";
   $("segmentsList").innerHTML = "";
   $("questionsList").innerHTML = "";
   $("reportMarkdown").textContent = "等待分析结果";
