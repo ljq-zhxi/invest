@@ -1,0 +1,6 @@
+data_source: sina
+ma_windows: [5, 10, 20, 30, 60]
+near_threshold_pct: 0.3
+output_path: output/a_stock_ma_report.html
+request_timeout_seconds: 10
+retry_times: 3

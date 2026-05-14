@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A股均线监控报告</title>
+  <style>
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #1f2937; background: #f5f7fb; }
+    header { padding: 24px 28px; background: #ffffff; border-bottom: 1px solid #e5e7eb; }
+    h1 { margin: 0 0 12px; font-size: 24px; }
+    .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
+    .metric { padding: 12px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; }
+    .metric span { display: block; color: #6b7280; font-size: 12px; }
+    .metric strong { font-size: 18px; }
+    main { padding: 20px 28px 32px; }
+    .toolbar { display: flex; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+    input, select { height: 36px; padding: 0 10px; border: 1px solid #d1d5db; border-radius: 6px; background: #fff; }
+    .table-wrap { overflow-x: auto; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; }
+    table { width: 100%; border-collapse: collapse; min-width: 1180px; }
+    th, td { padding: 10px 8px; border-bottom: 1px solid #e5e7eb; text-align: right; white-space: nowrap; }
+    th { position: sticky; top: 0; background: #f9fafb; cursor: pointer; font-size: 13px; }
+    td:first-child, td:nth-child(2), th:first-child, th:nth-child(2) { text-align: left; }
+    tr.error { background: #fff7ed; }
+    .up, .bull, .strong-bull { color: #b91c1c; font-weight: 600; }
+    .down, .bear, .strong-bear { color: #047857; font-weight: 600; }
+    .near { color: #b45309; font-weight: 600; }
+    .neutral { color: #4b5563; font-weight: 600; }
+    .insufficient { color: #374151; font-weight: 600; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>A股均线监控报告</h1>
+    <div class="summary">
+      <div class="metric"><span>报告生成时间</span><strong>2026-05-13 14:58:52</strong></div>
+      <div class="metric"><span>最近交易日</span><strong>2026-05-12</strong></div>
+      <div class="metric"><span>股票数量</span><strong>36</strong></div>
+      <div class="metric"><span>成功数量</span><strong>36</strong></div>
+      <div class="metric"><span>失败数量</span><strong>0</strong></div>
+      <div class="metric"><span>数据源</span><strong>新浪财经</strong></div>
+    </div>
+  </header>
+  <main>
+    <div class="toolbar">
+      <input id="searchInput" placeholder="搜索股票代码或名称">
+      <select id="statusFilter">
+        <option value="">全部状态</option>
+        <option>强多头</option><option>偏多</option><option>震荡</option>
+        <option>偏空</option><option>强空头</option><option>数据不足</option>
+      </select>
+    </div>
+    <div class="table-wrap">
+      <table id="reportTable">
+        <thead><tr><th>股票代码</th><th>股票名称</th><th>最近交易日</th><th>收盘价</th><th>MA5</th><th>MA5 状态</th><th>MA10</th><th>MA10 状态</th><th>MA20</th><th>MA20 状态</th><th>MA30</th><th>MA30 状态</th><th>MA60</th><th>MA60 状态</th><th>综合状态</th><th>备注</th></tr></thead>
+        <tbody><tr data-status="强空头"><td>002602</td><td>世纪华通</td><td>2026-05-12</td><td data-value="15.2400">15.24</td><td data-value="15.7260">15.73</td><td class="bear">5日线下</td><td data-value="16.2530">16.25</td><td class="bear">10日线下</td><td data-value="16.5160">16.52</td><td class="bear">20日线下</td><td data-value="16.5870">16.59</td><td class="bear">30日线下</td><td data-value="17.2280">17.23</td><td class="bear">60日线下</td><td class="strong-bear">强空头</td><td></td></tr>
+<tr data-status="震荡"><td>600160</td><td>巨化股份</td><td>2026-05-12</td><td data-value="35.1600">35.16</td><td data-value="35.9400">35.94</td><td class="bear">5日线下</td><td data-value="36.0300">36.03</td><td class="bear">10日线下</td><td data-value="35.1500">35.15</td><td class="near">贴近20日线</td><td data-value="34.9320">34.93</td><td class="bull">30日线上</td><td data-value="37.1170">37.12</td><td class="bear">60日线下</td><td class="neutral">震荡</td><td></td></tr>
+<tr data-status="偏多"><td>600673</td><td>东阳光</td><td>2026-05-12</td><td data-value="37.4500">37.45</td><td data-value="39.6280">39.63</td><td class="bear">5日线下</td><td data-value="36.5120">36.51</td><td class="bull">10日线上</td><td data-value="35.0860">35.09</td><td class="bull">20日线上</td><td data-value="33.6460">33.65</td><td class="bull">30日线上</td><td data-value="32.8530">32.85</td><td class="bull">60日线上</td><td class="bull">偏多</td><td></td></tr>
+<tr data-status="偏多"><td>002138</td><td>顺络电子</td><td>2026-05-12</td><td data-value="37.2000">37.20</td><td data-value="36.5700">36.57</td><td class="bull">5日线上</td><td data-value="35.8080">35.81</td><td class="bull">10日线上</td><td data-value="35.5620">35.56</td><td class="bull">20日线上</td><td data-value="34.9880">34.99</td><td class="bull">30日线上</td><td data-value="37.0490">37.05</td><td class="bull">60日线上</td><td class="bull">偏多</td><td></td></tr>
+<tr data-status="偏多"><td>601698</td><td>中国卫通</td><td>2026-05-12</td><td data-value="38.2600">38.26</td><td data-value="38.7060">38.71</td><td class="bear">5日线下</td><td data-value="37.3850">37.38</td><td class="bull">10日线上</td><td data-value="36.3190">36.32</td><td class="bull">20日线上</td><td data-value="34.9600">34.96</td><td class="bull">30日线上</td><td data-value="35.4480">35.45</td><td class="bull">60日线上</td><td class="bull">偏多</td><td></td></tr>
+<tr data-status="偏多"><td>000021</td><td>深科技</td><td>2026-05-12</td><td data-value="32.3100">32.31</td><td data-value="31.7120">31.71</td><td class="bull">5日线上</td><td data-value="30.3750">30.38</td><td class="bull">10日线上</td><td data-value="29.5710">29.57</td><td class="bull">20日线上</td><td data-value="28.6390">28.64</td><td class="bull">30日线上</td><td data-value="29.8530">29.85</td><td class="bull">60日线上</td><td class="bull">偏多</td><td></td></tr>
+<tr data-status="偏多"><td>159368</td><td>创业板新能源ETF</td><td>2026-05-12</td><td data-value="1.7130">1.71</td><td data-value="1.7320">1.73</td><td class="bear">5日线下</td><td data-value="1.6860">1.69</td><td class="bull">10日线上</td><td data-value="1.6440">1.64</td><td class="bull">20日线上</td><td data-value="1.5940">1.59</td><td class="bull">30日线上</td><td data-value="1.5660">1.57</td><td class="bull">60日线上</td><td class="bull">偏多</td><td></td></tr>
+<tr data-status="偏空"><td>601615</td><td>明阳智能</td><td>2026-05-12</td><td data-value="16.4300">16.43</td><td data-value="16.4000">16.40</td><td class="near">贴近5日线</td><td data-value="16.0680">16.07</td><td class="bull">10日线上</td><td data-value="16.4360">16.44</td><td class="near">贴近20日线</td><td data-value="16.4970">16.50</td><td class="bear">30日线下</td><td data-value="19.1190">19.12</td><td class="bear">60日线下</td><td class="bear">偏空</td><td></td></tr>
+<tr data-status="偏多"><td>603606</td><td>东方电缆</td><td>2026-05-12</td><td data-value="62.0700">62.07</td><td data-value="62.2220">62.22</td><td class="near">贴近5日线</td><td data-value="62.8130">62.81</td><td class="bear">10日线下</td><td data-value="61.9000">61.90</td><td class="near">贴近20日线</td><td data-value="61.0860">61.09</td><td class="bull">30日线上</td><td data-value="60.9820">60.98</td><td class="bull">60日线上</td><td class="bull">偏多</td><td></td></tr>
+<tr data-status="强多头"><td>002429</td><td>兆驰股份</td><td>2026-05-12</td><td data-value="13.4800">13.48</td><td data-value="12.5780">12.58</td><td class="bull">5日线上</td><td data-value="12.0240">12.02</td><td class="bull">10日线上</td><td data-value="11.4660">11.47</td><td class="bull">20日线上</td><td data-value="10.8890">10.89</td><td class="bull">30日线上</td><td data-value="10.6060">10.61</td><td class="bull">60日线上</td><td class="strong-bull">强多头</td><td></td></tr>
+<tr data-status="偏空"><td>601166</td><td>兴业银行</td><td>2026-05-12</td><td data-value="17.7500">17.75</td><td data-value="17.7500">17.75</td><td class="near">贴近5日线</td><td data-value="17.9350">17.93</td><td class="bear">10日线下</td><td data-value="18.1890">18.19</td><td class="bear">20日线下</td><td data-value="18.3760">18.38</td><td class="bear">30日线下</td><td data-value="18.5110">18.51</td><td class="bear">60日线下</td><td class="bear">偏空</td><td></td></tr>
+<tr data-status="强多头"><td>600498</td><td>烽火通信</td><td>2026-05-12</td><td data-value="59.0100">59.01</td><td data-value="55.0060">55.01</td><td class="bull">5日线上</td><td data-value="52.9370">52.94</td><td class="bull">10日线上</td><td data-value="52.3200">52.32</td><td class="bull">20日线上</td><td data-value="51.2640">51.26</td><td class="bull">30日线上</td><td data-value="49.6830">49.68</td><td class="bull">60日线上</td><td class="strong-bull">强多头</td><td></td></tr>
+<tr data-status="偏多"><td>000831</td><td>中国稀土</td><td>2026-05-12</td><td data-value="55.8000">55.80</td><td data-value="56.0800">56.08</td><td class="bear">5日线下</td><td data-value="53.9240">53.92</td><td class="bull">10日线上</td><td data-value="53.2420">53.24</td><td class="bull">20日线上</td><td data-value="51.6450">51.65</td><td class="bull">30日线上</td><td data-value="53.2220">53.22</td><td class="bull">60日线上</td><td class="bull">偏多</td><td></td></tr>
+<tr data-status="偏多"><td>603920</td><td>世运电路</td><td>2026-05-12</td><td data-value="66.5600">66.56</td><td data-value="60.6920">60.69</td><td class="bull">5日线上</td><td data-value="57.5330">57.53</td><td class="bull">10日线上</td><td data-value="57.5950">57.59</td><td class="bull">20日线上</td><td data-value="55.5030">55.50</td><td class="bull">30日线上</td><td data-value="57.3760">57.38</td><td class="bull">60日线上</td><td class="bull">偏多</td><td></td></tr>
+<tr data-status="偏多"><td>600089</td><td>特变电工</td><td>2026-05-12</td><td data-value="28.9400">28.94</td><td data-value="27.9400">27.94</td><td class="bull">5日线上</td><td data-value="27.4090">27.41</td><td class="bull">10日线上</td><td data-value="27.4840">27.48</td><td class="bull">20日线上</td><td data-value="27.2660">27.27</td><td class="bull">30日线上</td><td data-value="28.4560">28.46</td><td class="bull">60日线上</td><td class="bull">偏多</td><td></td></tr>
+<tr data-status="偏多"><td>560090</td><td>证券ETF汇添富</td><td>2026-05-12</td><td data-value="1.1820">1.18</td><td data-value="1.1720">1.17</td><td class="bull">5日线上</td><td data-value="1.1590">1.16</td><td class="bull">10日线上</td><td data-value="1.1550">1.16</td><td class="bull">20日线上</td><td data-value="1.1400">1.14</td><td class="bull">30日线上</td><td data-value="1.1800">1.18</td><td class="near">贴近60日线</td><td class="bull">偏多</td><td></td></tr>
+<tr data-status="偏多"><td>000063</td><td>中兴通讯</td><td>2026-05-12</td><td data-value="38.0900">38.09</td><td data-value="38.6060">38.61</td><td class="bear">5日线下</td><td data-value="37.5800">37.58</td><td class="bull">10日线上</td><td data-value="36.7150">36.72</td><td class="bull">20日线上</td><td data-value="35.4580">35.46</td><td class="bull">30日线上</td><td data-value="36.0050">36.01</td><td class="bull">60日线上</td><td class="bull">偏多</td><td></td></tr>
+<tr data-status="偏多"><td>000776</td><td>广发证券</td><td>2026-05-12</td><td data-value="21.0300">21.03</td><td data-value="21.0740">21.07</td><td class="near">贴近5日线</td><td data-value="20.8740">20.87</td><td class="bull">10日线上</td><td data-value="20.3590">20.36</td><td class="bull">20日线上</td><td data-value="19.6160">19.62</td><td class="bull">30日线上</td><td data-value="19.8900">19.89</td><td class="bull">60日线上</td><td class="bull">偏多</td><td></td></tr>
+<tr data-status="偏空"><td>601600</td><td>中国铝业</td><td>2026-05-12</td><td data-value="11.6800">11.68</td><td data-value="11.8880">11.89</td><td class="bear">5日线下</td><td data-value="11.8710">11.87</td><td class="bear">10日线下</td><td data-value="12.0950">12.10</td><td class="bear">20日线下</td><td data-value="11.9620">11.96</td><td class="bear">30日线下</td><td data-value="12.5890">12.59</td><td class="bear">60日线下</td><td class="bear">偏空</td><td></td></tr>
+<tr data-status="震荡"><td>159516</td><td>半导体设备ETF</td><td>2026-05-12</td><td data-value="1.1230">1.12</td><td data-value="1.0660">1.07</td><td class="bull">5日线上</td><td data-value="1.0180">1.02</td><td class="bull">10日线上</td><td data-value="0.9580">0.96</td><td class="bull">20日线上</td><td data-value="0.9700">0.97</td><td class="bull">30日线上</td><td data-value="1.3680">1.37</td><td class="bear">60日线下</td><td class="neutral">震荡</td><td></td></tr>
+<tr data-status="偏多"><td>601728</td><td>中国电信</td><td>2026-05-12</td><td data-value="6.1200">6.12</td><td data-value="6.0500">6.05</td><td class="bull">5日线上</td><td data-value="6.0200">6.02</td><td class="bull">10日线上</td><td data-value="5.9430">5.94</td><td class="bull">20日线上</td><td data-value="5.8660">5.87</td><td class="bull">30日线上</td><td data-value="5.8720">5.87</td><td class="bull">60日线上</td><td class="bull">偏多</td><td></td></tr>
+<tr data-status="偏多"><td>600143</td><td>金发科技</td><td>2026-05-12</td><td data-value="17.6200">17.62</td><td data-value="17.7060">17.71</td><td class="bear">5日线下</td><td data-value="17.2990">17.30</td><td class="bull">10日线上</td><td data-value="17.1690">17.17</td><td class="bull">20日线上</td><td data-value="16.9840">16.98</td><td class="bull">30日线上</td><td data-value="17.5640">17.56</td><td class="bull">60日线上</td><td class="bull">偏多</td><td></td></tr>
+<tr data-status="偏空"><td>601020</td><td>华钰矿业</td><td>2026-05-12</td><td data-value="29.5500">29.55</td><td data-value="30.0680">30.07</td><td class="bear">5日线下</td><td data-value="30.3270">30.33</td><td class="bear">10日线下</td><td data-value="30.5260">30.53</td><td class="bear">20日线下</td><td data-value="29.6290">29.63</td><td class="near">贴近30日线</td><td data-value="31.7990">31.80</td><td class="bear">60日线下</td><td class="bear">偏空</td><td></td></tr>
+<tr data-status="偏多"><td>002202</td><td>金风科技</td><td>2026-05-12</td><td data-value="27.2700">27.27</td><td data-value="28.0640">28.06</td><td class="bear">5日线下</td><td data-value="27.1120">27.11</td><td class="bull">10日线上</td><td data-value="26.2340">26.23</td><td class="bull">20日线上</td><td data-value="25.9500">25.95</td><td class="bull">30日线上</td><td data-value="26.9050">26.91</td><td class="bull">60日线上</td><td class="bull">偏多</td><td></td></tr>
+<tr data-status="强空头"><td>601211</td><td>国泰海通</td><td>2026-05-12</td><td data-value="16.1000">16.10</td><td data-value="16.1980">16.20</td><td class="bear">5日线下</td><td data-value="16.2300">16.23</td><td class="bear">10日线下</td><td data-value="16.6050">16.61</td><td class="bear">20日线下</td><td data-value="16.6150">16.61</td><td class="bear">30日线下</td><td data-value="17.6340">17.63</td><td class="bear">60日线下</td><td class="strong-bear">强空头</td><td></td></tr>
+<tr data-status="强多头"><td>159957</td><td>创业板ETF华夏</td><td>2026-05-12</td><td data-value="2.5840">2.58</td><td data-value="2.5350">2.54</td><td class="bull">5日线上</td><td data-value="2.4710">2.47</td><td class="bull">10日线上</td><td data-value="2.4200">2.42</td><td class="bull">20日线上</td><td data-value="2.3210">2.32</td><td class="bull">30日线上</td><td data-value="2.2390">2.24</td><td class="bull">60日线上</td><td class="strong-bull">强多头</td><td></td></tr>
+<tr data-status="震荡"><td>600489</td><td>中金黄金</td><td>2026-05-12</td><td data-value="26.8300">26.83</td><td data-value="27.3780">27.38</td><td class="bear">5日线下</td><td data-value="26.5450">26.55</td><td class="bull">10日线上</td><td data-value="26.7350">26.73</td><td class="bull">20日线上</td><td data-value="26.7170">26.72</td><td class="bull">30日线上</td><td data-value="28.4200">28.42</td><td class="bear">60日线下</td><td class="neutral">震荡</td><td></td></tr>
+<tr data-status="震荡"><td>603659</td><td>璞泰来</td><td>2026-05-12</td><td data-value="33.2300">33.23</td><td data-value="34.7740">34.77</td><td class="bear">5日线下</td><td data-value="35.6940">35.69</td><td class="bear">10日线下</td><td data-value="35.4600">35.46</td><td class="bear">20日线下</td><td data-value="34.3180">34.32</td><td class="bear">30日线下</td><td data-value="31.7880">31.79</td><td class="bull">60日线上</td><td class="neutral">震荡</td><td></td></tr>
+<tr data-status="偏多"><td>002600</td><td>领益智造</td><td>2026-05-12</td><td data-value="14.9600">14.96</td><td data-value="14.7880">14.79</td><td class="bull">5日线上</td><td data-value="14.4590">14.46</td><td class="bull">10日线上</td><td data-value="14.2710">14.27</td><td class="bull">20日线上</td><td data-value="13.8210">13.82</td><td class="bull">30日线上</td><td data-value="14.1780">14.18</td><td class="bull">60日线上</td><td class="bull">偏多</td><td></td></tr>
+<tr data-status="强多头"><td>002384</td><td>东山精密</td><td>2026-05-12</td><td data-value="219.4600">219.46</td><td data-value="210.4200">210.42</td><td class="bull">5日线上</td><td data-value="198.1580">198.16</td><td class="bull">10日线上</td><td data-value="178.7400">178.74</td><td class="bull">20日线上</td><td data-value="155.8890">155.89</td><td class="bull">30日线上</td><td data-value="124.8370">124.84</td><td class="bull">60日线上</td><td class="strong-bull">强多头</td><td></td></tr>
+<tr data-status="偏多"><td>600114</td><td>东睦股份</td><td>2026-05-12</td><td data-value="35.1000">35.10</td><td data-value="34.7200">34.72</td><td class="bull">5日线上</td><td data-value="33.9920">33.99</td><td class="bull">10日线上</td><td data-value="32.8730">32.87</td><td class="bull">20日线上</td><td data-value="31.2900">31.29</td><td class="bull">30日线上</td><td data-value="31.4000">31.40</td><td class="bull">60日线上</td><td class="bull">偏多</td><td></td></tr>
+<tr data-status="偏多"><td>000977</td><td>浪潮信息</td><td>2026-05-12</td><td data-value="73.1300">73.13</td><td data-value="74.4140">74.41</td><td class="bear">5日线下</td><td data-value="73.2940">73.29</td><td class="near">贴近10日线</td><td data-value="71.7340">71.73</td><td class="bull">20日线上</td><td data-value="67.4030">67.40</td><td class="bull">30日线上</td><td data-value="64.2190">64.22</td><td class="bull">60日线上</td><td class="bull">偏多</td><td></td></tr>
+<tr data-status="偏多"><td>600584</td><td>长电科技</td><td>2026-05-12</td><td data-value="55.2400">55.24</td><td data-value="51.7560">51.76</td><td class="bull">5日线上</td><td data-value="48.5010">48.50</td><td class="bull">10日线上</td><td data-value="46.2480">46.25</td><td class="bull">20日线上</td><td data-value="44.0490">44.05</td><td class="bull">30日线上</td><td data-value="44.7700">44.77</td><td class="bull">60日线上</td><td class="bull">偏多</td><td></td></tr>
+<tr data-status="偏多"><td>603296</td><td>华勤技术</td><td>2026-05-12</td><td data-value="109.6300">109.63</td><td data-value="113.0120">113.01</td><td class="bear">5日线下</td><td data-value="109.0670">109.07</td><td class="bull">10日线上</td><td data-value="104.6850">104.69</td><td class="bull">20日线上</td><td data-value="99.6180">99.62</td><td class="bull">30日线上</td><td data-value="93.5020">93.50</td><td class="bull">60日线上</td><td class="bull">偏多</td><td></td></tr>
+<tr data-status="偏空"><td>603799</td><td>华友钴业</td><td>2026-05-12</td><td data-value="62.8700">62.87</td><td data-value="65.9760">65.98</td><td class="bear">5日线下</td><td data-value="65.9970">66.00</td><td class="bear">10日线下</td><td data-value="65.0630">65.06</td><td class="bear">20日线下</td><td data-value="63.0990">63.10</td><td class="bear">30日线下</td><td data-value="65.7540">65.75</td><td class="bear">60日线下</td><td class="bear">偏空</td><td></td></tr>
+<tr data-status="偏多"><td>002851</td><td>麦格米特</td><td>2026-05-12</td><td data-value="125.3300">125.33</td><td data-value="123.2720">123.27</td><td class="bull">5日线上</td><td data-value="116.9860">116.99</td><td class="bull">10日线上</td><td data-value="111.9340">111.93</td><td class="bull">20日线上</td><td data-value="107.6750">107.67</td><td class="bull">30日线上</td><td data-value="112.7500">112.75</td><td class="bull">60日线上</td><td class="bull">偏多</td><td></td></tr></tbody>
+      </table>
+    </div>
+  </main>
+  <script>
+    const searchInput = document.getElementById('searchInput');
+    const statusFilter = document.getElementById('statusFilter');
+    const table = document.getElementById('reportTable');
+    function applyFilter() {
+      const keyword = searchInput.value.trim().toLowerCase();
+      const status = statusFilter.value;
+      for (const row of table.tBodies[0].rows) {
+        const text = row.innerText.toLowerCase();
+        const matchedKeyword = !keyword || text.includes(keyword);
+        const matchedStatus = !status || row.dataset.status === status;
+        row.style.display = matchedKeyword && matchedStatus ? '' : 'none';
+      }
+    }
+    searchInput.addEventListener('input', applyFilter);
+    statusFilter.addEventListener('change', applyFilter);
+    for (const th of table.tHead.rows[0].cells) {
+      th.addEventListener('click', () => {
+        const index = th.cellIndex;
+        const rows = Array.from(table.tBodies[0].rows);
+        const asc = th.dataset.asc !== 'true';
+        rows.sort((a, b) => {
+          const av = a.cells[index].dataset.value || a.cells[index].innerText;
+          const bv = b.cells[index].dataset.value || b.cells[index].innerText;
+          const an = Number(av), bn = Number(bv);
+          const result = Number.isFinite(an) && Number.isFinite(bn) ? an - bn : av.localeCompare(bv, 'zh-CN');
+          return asc ? result : -result;
+        });
+        th.dataset.asc = String(asc);
+        rows.forEach(row => table.tBodies[0].appendChild(row));
+      });
+    }
+  </script>
+</body>
+</html>
