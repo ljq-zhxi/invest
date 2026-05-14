@@ -170,3 +170,252 @@ RuntimeError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify
 2026-05-13 14:58:23,504 WARNING fetch failed: symbol=sh603606 attempt=2 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh603606&scale=240&ma=no&datalen=80 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
 2026-05-13 14:58:23,594 WARNING fetch failed: symbol=sh603606 attempt=2 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh603606&scale=240&ma=no&datalen=80 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
 2026-05-13 14:58:52,056 INFO report generated: output/a_stock_ma_report.html success=36 failed=0
+2026-05-14 14:48:05,014 INFO report generated: output/a_stock_ma_report.html success=36 failed=0
+2026-05-14 14:48:42,016 INFO report generated: output/a_stock_ma_report.html success=36 failed=0
+2026-05-14 14:49:11,171 INFO report generated: output/a_stock_ma_report.html success=36 failed=0
+2026-05-14 14:51:20,555 INFO report generated: output/a_stock_ma_report.html success=36 failed=0
+2026-05-14 14:54:06,281 INFO report generated: output/a_stock_ma_report.html success=36 failed=0
+2026-05-14 14:54:44,440 INFO report generated: output/a_stock_ma_report.html success=36 failed=0
+2026-05-14 19:44:07,680 WARNING fetch failed: symbol=sz002602 attempt=1 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sz002602&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:07,820 WARNING fetch failed: symbol=sz002602 attempt=1 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sz002602&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:08,911 WARNING fetch failed: symbol=sz002602 attempt=2 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sz002602&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:09,006 WARNING fetch failed: symbol=sz002602 attempt=2 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sz002602&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:11,105 WARNING fetch failed: symbol=sz002602 attempt=3 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sz002602&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:11,197 WARNING fetch failed: symbol=sz002602 attempt=3 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sz002602&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:11,197 ERROR stock failed: code=002602 market=sz
+Traceback (most recent call last):
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 649, in run
+    result = analyze_stock(stock, source, windows, threshold_pct, latest_seen, history_limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 376, in analyze_stock
+    bars = source.get_daily_bars(stock.code, stock.market, limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 81, in get_daily_bars
+    raise RuntimeError(str(last_error or "unknown sina api error"))
+RuntimeError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:11,291 WARNING fetch failed: symbol=sh600160 attempt=1 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh600160&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:11,384 WARNING fetch failed: symbol=sh600160 attempt=1 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh600160&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:12,479 WARNING fetch failed: symbol=sh600160 attempt=2 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh600160&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:12,571 WARNING fetch failed: symbol=sh600160 attempt=2 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh600160&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:14,683 WARNING fetch failed: symbol=sh600160 attempt=3 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh600160&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:14,775 WARNING fetch failed: symbol=sh600160 attempt=3 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh600160&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:14,776 ERROR stock failed: code=600160 market=sh
+Traceback (most recent call last):
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 649, in run
+    result = analyze_stock(stock, source, windows, threshold_pct, latest_seen, history_limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 376, in analyze_stock
+    bars = source.get_daily_bars(stock.code, stock.market, limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 81, in get_daily_bars
+    raise RuntimeError(str(last_error or "unknown sina api error"))
+RuntimeError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:14,872 WARNING fetch failed: symbol=sh600673 attempt=1 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh600673&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:14,971 WARNING fetch failed: symbol=sh600673 attempt=1 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh600673&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:16,073 WARNING fetch failed: symbol=sh600673 attempt=2 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh600673&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:16,167 WARNING fetch failed: symbol=sh600673 attempt=2 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh600673&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:18,272 WARNING fetch failed: symbol=sh600673 attempt=3 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh600673&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:18,374 WARNING fetch failed: symbol=sh600673 attempt=3 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh600673&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:18,374 ERROR stock failed: code=600673 market=sh
+Traceback (most recent call last):
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 649, in run
+    result = analyze_stock(stock, source, windows, threshold_pct, latest_seen, history_limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 376, in analyze_stock
+    bars = source.get_daily_bars(stock.code, stock.market, limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 81, in get_daily_bars
+    raise RuntimeError(str(last_error or "unknown sina api error"))
+RuntimeError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:18,467 WARNING fetch failed: symbol=sz002138 attempt=1 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sz002138&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:18,564 WARNING fetch failed: symbol=sz002138 attempt=1 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sz002138&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:19,669 WARNING fetch failed: symbol=sz002138 attempt=2 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sz002138&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:19,768 WARNING fetch failed: symbol=sz002138 attempt=2 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sz002138&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:21,873 WARNING fetch failed: symbol=sz002138 attempt=3 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sz002138&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:21,975 WARNING fetch failed: symbol=sz002138 attempt=3 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sz002138&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:21,975 ERROR stock failed: code=002138 market=sz
+Traceback (most recent call last):
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 649, in run
+    result = analyze_stock(stock, source, windows, threshold_pct, latest_seen, history_limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 376, in analyze_stock
+    bars = source.get_daily_bars(stock.code, stock.market, limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 81, in get_daily_bars
+    raise RuntimeError(str(last_error or "unknown sina api error"))
+RuntimeError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:22,070 WARNING fetch failed: symbol=sh601698 attempt=1 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh601698&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:22,166 WARNING fetch failed: symbol=sh601698 attempt=1 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh601698&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:23,266 WARNING fetch failed: symbol=sh601698 attempt=2 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh601698&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:23,369 WARNING fetch failed: symbol=sh601698 attempt=2 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh601698&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:25,472 WARNING fetch failed: symbol=sh601698 attempt=3 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh601698&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:25,570 WARNING fetch failed: symbol=sh601698 attempt=3 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh601698&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:25,570 ERROR stock failed: code=601698 market=sh
+Traceback (most recent call last):
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 649, in run
+    result = analyze_stock(stock, source, windows, threshold_pct, latest_seen, history_limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 376, in analyze_stock
+    bars = source.get_daily_bars(stock.code, stock.market, limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 81, in get_daily_bars
+    raise RuntimeError(str(last_error or "unknown sina api error"))
+RuntimeError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:25,664 WARNING fetch failed: symbol=sz000021 attempt=1 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sz000021&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:25,756 WARNING fetch failed: symbol=sz000021 attempt=1 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sz000021&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:26,867 WARNING fetch failed: symbol=sz000021 attempt=2 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sz000021&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:26,964 WARNING fetch failed: symbol=sz000021 attempt=2 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sz000021&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:29,058 WARNING fetch failed: symbol=sz000021 attempt=3 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sz000021&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:29,154 WARNING fetch failed: symbol=sz000021 attempt=3 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sz000021&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:29,154 ERROR stock failed: code=000021 market=sz
+Traceback (most recent call last):
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 649, in run
+    result = analyze_stock(stock, source, windows, threshold_pct, latest_seen, history_limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 376, in analyze_stock
+    bars = source.get_daily_bars(stock.code, stock.market, limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 81, in get_daily_bars
+    raise RuntimeError(str(last_error or "unknown sina api error"))
+RuntimeError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:29,260 WARNING fetch failed: symbol=sz159368 attempt=1 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sz159368&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:29,404 WARNING fetch failed: symbol=sz159368 attempt=1 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sz159368&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:30,513 WARNING fetch failed: symbol=sz159368 attempt=2 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sz159368&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:30,606 WARNING fetch failed: symbol=sz159368 attempt=2 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sz159368&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:32,706 WARNING fetch failed: symbol=sz159368 attempt=3 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sz159368&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:32,801 WARNING fetch failed: symbol=sz159368 attempt=3 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sz159368&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:32,801 ERROR stock failed: code=159368 market=sz
+Traceback (most recent call last):
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 649, in run
+    result = analyze_stock(stock, source, windows, threshold_pct, latest_seen, history_limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 376, in analyze_stock
+    bars = source.get_daily_bars(stock.code, stock.market, limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 81, in get_daily_bars
+    raise RuntimeError(str(last_error or "unknown sina api error"))
+RuntimeError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:32,902 WARNING fetch failed: symbol=sh601615 attempt=1 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh601615&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:33,004 WARNING fetch failed: symbol=sh601615 attempt=1 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh601615&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:34,107 WARNING fetch failed: symbol=sh601615 attempt=2 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh601615&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:34,201 WARNING fetch failed: symbol=sh601615 attempt=2 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh601615&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:36,297 WARNING fetch failed: symbol=sh601615 attempt=3 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh601615&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:36,398 WARNING fetch failed: symbol=sh601615 attempt=3 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh601615&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:36,398 ERROR stock failed: code=601615 market=sh
+Traceback (most recent call last):
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 649, in run
+    result = analyze_stock(stock, source, windows, threshold_pct, latest_seen, history_limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 376, in analyze_stock
+    bars = source.get_daily_bars(stock.code, stock.market, limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 81, in get_daily_bars
+    raise RuntimeError(str(last_error or "unknown sina api error"))
+RuntimeError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:36,494 WARNING fetch failed: symbol=sh603606 attempt=1 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh603606&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:36,595 WARNING fetch failed: symbol=sh603606 attempt=1 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh603606&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:37,695 WARNING fetch failed: symbol=sh603606 attempt=2 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh603606&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:37,794 WARNING fetch failed: symbol=sh603606 attempt=2 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh603606&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:39,899 WARNING fetch failed: symbol=sh603606 attempt=3 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh603606&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:39,991 WARNING fetch failed: symbol=sh603606 attempt=3 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh603606&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:39,994 ERROR stock failed: code=603606 market=sh
+Traceback (most recent call last):
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 649, in run
+    result = analyze_stock(stock, source, windows, threshold_pct, latest_seen, history_limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 376, in analyze_stock
+    bars = source.get_daily_bars(stock.code, stock.market, limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 81, in get_daily_bars
+    raise RuntimeError(str(last_error or "unknown sina api error"))
+RuntimeError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:40,092 WARNING fetch failed: symbol=sz002429 attempt=1 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sz002429&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:40,196 WARNING fetch failed: symbol=sz002429 attempt=1 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sz002429&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:41,321 WARNING fetch failed: symbol=sz002429 attempt=2 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sz002429&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:41,472 WARNING fetch failed: symbol=sz002429 attempt=2 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sz002429&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:43,567 WARNING fetch failed: symbol=sz002429 attempt=3 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sz002429&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:43,659 WARNING fetch failed: symbol=sz002429 attempt=3 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sz002429&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:43,659 ERROR stock failed: code=002429 market=sz
+Traceback (most recent call last):
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 649, in run
+    result = analyze_stock(stock, source, windows, threshold_pct, latest_seen, history_limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 376, in analyze_stock
+    bars = source.get_daily_bars(stock.code, stock.market, limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 81, in get_daily_bars
+    raise RuntimeError(str(last_error or "unknown sina api error"))
+RuntimeError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:43,756 WARNING fetch failed: symbol=sh601166 attempt=1 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh601166&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:43,846 WARNING fetch failed: symbol=sh601166 attempt=1 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh601166&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:44,953 WARNING fetch failed: symbol=sh601166 attempt=2 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh601166&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:45,054 WARNING fetch failed: symbol=sh601166 attempt=2 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh601166&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:47,159 WARNING fetch failed: symbol=sh601166 attempt=3 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh601166&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:47,272 WARNING fetch failed: symbol=sh601166 attempt=3 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh601166&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:47,272 ERROR stock failed: code=601166 market=sh
+Traceback (most recent call last):
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 649, in run
+    result = analyze_stock(stock, source, windows, threshold_pct, latest_seen, history_limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 376, in analyze_stock
+    bars = source.get_daily_bars(stock.code, stock.market, limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 81, in get_daily_bars
+    raise RuntimeError(str(last_error or "unknown sina api error"))
+RuntimeError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:47,392 WARNING fetch failed: symbol=sh600498 attempt=1 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh600498&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:47,487 WARNING fetch failed: symbol=sh600498 attempt=1 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh600498&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:48,600 WARNING fetch failed: symbol=sh600498 attempt=2 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh600498&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:48,691 WARNING fetch failed: symbol=sh600498 attempt=2 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh600498&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:50,811 WARNING fetch failed: symbol=sh600498 attempt=3 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh600498&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:50,901 WARNING fetch failed: symbol=sh600498 attempt=3 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh600498&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:50,902 ERROR stock failed: code=600498 market=sh
+Traceback (most recent call last):
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 649, in run
+    result = analyze_stock(stock, source, windows, threshold_pct, latest_seen, history_limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 376, in analyze_stock
+    bars = source.get_daily_bars(stock.code, stock.market, limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 81, in get_daily_bars
+    raise RuntimeError(str(last_error or "unknown sina api error"))
+RuntimeError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:51,001 WARNING fetch failed: symbol=sz000831 attempt=1 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sz000831&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:51,108 WARNING fetch failed: symbol=sz000831 attempt=1 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sz000831&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:52,207 WARNING fetch failed: symbol=sz000831 attempt=2 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sz000831&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:52,314 WARNING fetch failed: symbol=sz000831 attempt=2 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sz000831&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:54,415 WARNING fetch failed: symbol=sz000831 attempt=3 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sz000831&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:54,510 WARNING fetch failed: symbol=sz000831 attempt=3 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sz000831&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:54,510 ERROR stock failed: code=000831 market=sz
+Traceback (most recent call last):
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 649, in run
+    result = analyze_stock(stock, source, windows, threshold_pct, latest_seen, history_limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 376, in analyze_stock
+    bars = source.get_daily_bars(stock.code, stock.market, limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 81, in get_daily_bars
+    raise RuntimeError(str(last_error or "unknown sina api error"))
+RuntimeError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:54,610 WARNING fetch failed: symbol=sh603920 attempt=1 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh603920&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:54,710 WARNING fetch failed: symbol=sh603920 attempt=1 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh603920&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:55,815 WARNING fetch failed: symbol=sh603920 attempt=2 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh603920&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:55,909 WARNING fetch failed: symbol=sh603920 attempt=2 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh603920&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:58,021 WARNING fetch failed: symbol=sh603920 attempt=3 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh603920&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:58,130 WARNING fetch failed: symbol=sh603920 attempt=3 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh603920&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:58,130 ERROR stock failed: code=603920 market=sh
+Traceback (most recent call last):
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 649, in run
+    result = analyze_stock(stock, source, windows, threshold_pct, latest_seen, history_limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 376, in analyze_stock
+    bars = source.get_daily_bars(stock.code, stock.market, limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 81, in get_daily_bars
+    raise RuntimeError(str(last_error or "unknown sina api error"))
+RuntimeError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:58,233 WARNING fetch failed: symbol=sh600089 attempt=1 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh600089&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:58,322 WARNING fetch failed: symbol=sh600089 attempt=1 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh600089&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:59,419 WARNING fetch failed: symbol=sh600089 attempt=2 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh600089&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:44:59,513 WARNING fetch failed: symbol=sh600089 attempt=2 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh600089&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:45:01,619 WARNING fetch failed: symbol=sh600089 attempt=3 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh600089&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:45:01,716 WARNING fetch failed: symbol=sh600089 attempt=3 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh600089&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:45:01,717 ERROR stock failed: code=600089 market=sh
+Traceback (most recent call last):
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 649, in run
+    result = analyze_stock(stock, source, windows, threshold_pct, latest_seen, history_limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 376, in analyze_stock
+    bars = source.get_daily_bars(stock.code, stock.market, limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 81, in get_daily_bars
+    raise RuntimeError(str(last_error or "unknown sina api error"))
+RuntimeError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:45:01,863 WARNING fetch failed: symbol=sh560090 attempt=1 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh560090&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:45:01,961 WARNING fetch failed: symbol=sh560090 attempt=1 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh560090&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:45:03,073 WARNING fetch failed: symbol=sh560090 attempt=2 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh560090&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:45:03,176 WARNING fetch failed: symbol=sh560090 attempt=2 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh560090&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:45:05,277 WARNING fetch failed: symbol=sh560090 attempt=3 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sh560090&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:45:05,374 WARNING fetch failed: symbol=sh560090 attempt=3 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sh560090&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:45:05,375 ERROR stock failed: code=560090 market=sh
+Traceback (most recent call last):
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 649, in run
+    result = analyze_stock(stock, source, windows, threshold_pct, latest_seen, history_limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 376, in analyze_stock
+    bars = source.get_daily_bars(stock.code, stock.market, limit)
+  File "/Users/jianqiu.lei/PycharmProjects/0507/invest/stock_ma_monitor.py", line 81, in get_daily_bars
+    raise RuntimeError(str(last_error or "unknown sina api error"))
+RuntimeError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:45:05,465 WARNING fetch failed: symbol=sz000063 attempt=1 url=https://money.finance.sina.com.cn/quotes_service/api/json_v2.php/CN_MarketData.getKLineData?symbol=sz000063&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 19:45:05,562 WARNING fetch failed: symbol=sz000063 attempt=1 url=https://quotes.sina.cn/cn/api/jsonp_v2.php/var%20data=/CN_MarketDataService.getKLineData?symbol=sz000063&scale=240&ma=no&datalen=5000 error=<urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1018)>
+2026-05-14 20:00:04,954 INFO report generated: output/a_stock_ma_report.html success=36 failed=0

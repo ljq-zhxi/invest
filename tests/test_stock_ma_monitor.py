@@ -2,7 +2,14 @@ from __future__ import annotations
 
 import unittest
 
-from stock_ma_monitor import DailyBar, calculate_ma, ma_position_status, overall_status
+from stock_ma_monitor import (
+    DailyBar,
+    analyze_drawdown_from_recent_peak,
+    analyze_trend_retracement_and_break,
+    calculate_ma,
+    ma_position_status,
+    overall_status,
+)
 
 
 class StockMaMonitorTest(unittest.TestCase):
@@ -30,6 +37,42 @@ class StockMaMonitorTest(unittest.TestCase):
         self.assertEqual(overall_status(99, {5: 101, 10: 102, 20: 100, 30: 98, 60: 100}), "偏空")
         self.assertEqual(overall_status(100, {5: 101, 10: 99, 20: 100, 30: 98, 60: 97}), "震荡")
         self.assertEqual(overall_status(100, {5: 101, 10: 99, 20: None, 30: 98, 60: 97}), "数据不足")
+
+    def test_analyze_trend_retracement_and_break(self) -> None:
+        bars = [
+            DailyBar("2026-01-01", 10, 10.5, 9.9, 10.0, 1000),
+            DailyBar("2026-01-02", 10.1, 10.6, 10.0, 10.3, 1000),
+            DailyBar("2026-01-03", 10.2, 10.7, 10.1, 10.6, 1000),
+            DailyBar("2026-01-04", 10.4, 10.9, 10.3, 10.8, 1000),
+            DailyBar("2026-01-05", 10.5, 11.0, 10.4, 10.9, 1000),
+            DailyBar("2026-01-06", 10.6, 10.8, 10.2, 10.3, 1000),
+            DailyBar("2026-01-07", 10.4, 10.5, 9.8, 10.0, 1000),
+            DailyBar("2026-01-08", 10.2, 10.3, 9.6, 9.8, 1000),
+            DailyBar("2026-01-09", 10.0, 10.1, 9.3, 9.5, 1000),
+            DailyBar("2026-01-10", 9.8, 9.9, 9.1, 9.2, 1000),
+        ]
+
+        analysis = analyze_trend_retracement_and_break(bars, [5])
+
+        self.assertIn("summary", analysis)
+        self.assertIn("logs", analysis)
+        self.assertIn("统计", analysis["summary"])
+        self.assertTrue(len(analysis["logs"]) > 0)
+
+    def test_analyze_drawdown_from_recent_peak(self) -> None:
+        bars = [
+            DailyBar("2026-01-01", 10, 10.5, 9.9, 10.0, 1000),
+            DailyBar("2026-01-02", 10.4, 10.8, 10.3, 10.6, 1000),
+            DailyBar("2026-01-03", 10.9, 11.2, 10.8, 11.0, 1000),
+            DailyBar("2026-01-04", 10.7, 10.8, 10.2, 10.4, 1000),
+            DailyBar("2026-01-05", 10.5, 10.6, 10.0, 10.2, 1000),
+        ]
+
+        analysis = analyze_drawdown_from_recent_peak(bars)
+
+        self.assertEqual(analysis["peak_date"], "2026-01-03")
+        self.assertLess(analysis["diff_pct"], 0)
+        self.assertIn("下跌", analysis["summary"])
 
 
 if __name__ == "__main__":

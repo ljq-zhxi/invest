@@ -24,6 +24,7 @@ DEFAULT_CONFIG = {
     "output_path": "output/a_stock_ma_report.html",
     "request_timeout_seconds": 10,
     "retry_times": 3,
+    "history_limit": "all",
 }
 
 
@@ -191,6 +192,18 @@ def calculate_ma(bars: list[DailyBar], windows: list[int]) -> dict[int, float | 
     return ma
 
 
+def calculate_ma_series(bars: list[DailyBar], window: int) -> list[float | None]:
+    closes = [bar.close for bar in bars]
+    series: list[float | None] = []
+    for idx in range(len(closes)):
+        if idx + 1 < window:
+            series.append(None)
+            continue
+        segment = closes[idx + 1 - window: idx + 1]
+        series.append(sum(segment) / window)
+    return series
+
+
 def ma_position_status(close: float, ma_value: float | None, threshold_pct: float, window: int) -> tuple[str, float | None]:
     if ma_value is None or ma_value <= 0:
         return "N/A", None
@@ -219,16 +232,147 @@ def overall_status(close: float, ma: dict[int, float | None]) -> str:
     return "震荡"
 
 
+def analyze_trend_retracement_and_break(
+    bars: list[DailyBar],
+    windows: list[int],
+) -> dict[str, Any]:
+    ordered_windows = sorted(windows)
+    ma_map = {window: calculate_ma_series(bars, window) for window in ordered_windows}
+    trend_short_window = 20 if 20 in ma_map else ordered_windows[0]
+    trend_long_window = 60 if 60 in ma_map else ordered_windows[-1]
+    trend_logs: list[str] = []
+    up_touch_count = {window: 0 for window in ordered_windows}
+    weak_break_count = {window: 0 for window in ordered_windows}
+
+    current_mode = "none"
+    seg_start = ""
+    seg_end = ""
+    seg_deepest_up: int | None = None
+    seg_deepest_weak: int | None = None
+
+    for idx, bar in enumerate(bars):
+        short_ma = ma_map[trend_short_window][idx]
+        long_ma = ma_map[trend_long_window][idx]
+        if short_ma is None or long_ma is None:
+            mode = "none"
+        elif bar.close > short_ma and short_ma > long_ma:
+            mode = "up"
+        elif bar.close < short_ma and short_ma < long_ma:
+            mode = "weak"
+        else:
+            mode = "none"
+
+        if mode != current_mode:
+            if current_mode == "up" and seg_start and seg_end:
+                if seg_deepest_up is None:
+                    trend_logs.append(f"上升趋势 {seg_start}~{seg_end} 未触及均线")
+                else:
+                    trend_logs.append(f"上升趋势 {seg_start}~{seg_end} 最多回踩 MA{seg_deepest_up}")
+            if current_mode == "weak" and seg_start and seg_end:
+                if seg_deepest_weak is None:
+                    trend_logs.append(f"走弱趋势 {seg_start}~{seg_end} 未跌破均线")
+                else:
+                    trend_logs.append(f"走弱趋势 {seg_start}~{seg_end} 一般跌破 MA{seg_deepest_weak}")
+            current_mode = mode
+            seg_start = bar.date if mode in {"up", "weak"} else ""
+            seg_deepest_up = None
+            seg_deepest_weak = None
+
+        if mode not in {"up", "weak"}:
+            seg_end = ""
+            continue
+
+        seg_end = bar.date
+        if mode == "up":
+            touched_today: int | None = None
+            for window in ordered_windows:
+                ma_value = ma_map[window][idx]
+                if ma_value is not None and bar.low <= ma_value:
+                    up_touch_count[window] += 1
+                    touched_today = window
+            if touched_today is not None:
+                trend_logs.append(f"{bar.date} 上升趋势回踩 MA{touched_today}")
+                seg_deepest_up = max(seg_deepest_up or touched_today, touched_today)
+        else:
+            broken_today: int | None = None
+            for window in ordered_windows:
+                ma_value = ma_map[window][idx]
+                if ma_value is not None and bar.close < ma_value:
+                    weak_break_count[window] += 1
+                    broken_today = window
+            if broken_today is not None:
+                trend_logs.append(f"{bar.date} 走弱趋势跌破 MA{broken_today}")
+                seg_deepest_weak = max(seg_deepest_weak or broken_today, broken_today)
+
+    if current_mode == "up" and seg_start and seg_end:
+        if seg_deepest_up is None:
+            trend_logs.append(f"上升趋势 {seg_start}~{seg_end} 未触及均线")
+        else:
+            trend_logs.append(f"上升趋势 {seg_start}~{seg_end} 最多回踩 MA{seg_deepest_up}")
+    if current_mode == "weak" and seg_start and seg_end:
+        if seg_deepest_weak is None:
+            trend_logs.append(f"走弱趋势 {seg_start}~{seg_end} 未跌破均线")
+        else:
+            trend_logs.append(f"走弱趋势 {seg_start}~{seg_end} 一般跌破 MA{seg_deepest_weak}")
+
+    up_summary = "，".join([f"MA{window}:{up_touch_count[window]}次" for window in ordered_windows])
+    weak_summary = "，".join([f"MA{window}:{weak_break_count[window]}次" for window in ordered_windows])
+    if not trend_logs:
+        trend_logs.append("未识别到有效上升/走弱趋势区间")
+    return {
+        "up_touch_count": up_touch_count,
+        "weak_break_count": weak_break_count,
+        "summary": f"上升趋势回踩统计({up_summary})；走弱趋势跌破统计({weak_summary})",
+        "logs": trend_logs,
+    }
+
+
+def analyze_drawdown_from_recent_peak(bars: list[DailyBar]) -> dict[str, Any]:
+    if not bars:
+        return {"summary": "无数据", "log": "无可用K线数据"}
+    latest = bars[-1]
+    recent_peak = latest
+    for idx in range(len(bars) - 2, 0, -1):
+        prev_close = bars[idx - 1].close
+        curr_close = bars[idx].close
+        next_close = bars[idx + 1].close
+        if curr_close >= prev_close and curr_close >= next_close:
+            recent_peak = bars[idx]
+            break
+    if recent_peak.close <= 0:
+        return {"summary": "无有效高点", "log": "最近极值高点无效"}
+    diff_pct = round((latest.close - recent_peak.close) / recent_peak.close * 100, 2)
+    down_pct = round(abs(diff_pct), 2) if diff_pct < 0 else 0.0
+    summary = f"较最近极值高点({recent_peak.date} {recent_peak.close:.2f})下跌 {down_pct:.2f}%"
+    log = f"当前价 {latest.close:.2f}；相较 {recent_peak.date} 高点 {recent_peak.close:.2f}，变化 {diff_pct:.2f}%"
+    return {
+        "peak_date": recent_peak.date,
+        "peak_close": round(recent_peak.close, 2),
+        "current_close": round(latest.close, 2),
+        "diff_pct": diff_pct,
+        "down_pct": down_pct,
+        "summary": summary,
+        "log": log,
+    }
+
+
 def analyze_stock(
     stock: Stock,
     source: StockDataSource,
     windows: list[int],
     threshold_pct: float,
     global_latest_date: str | None,
+    history_limit: Any,
 ) -> dict[str, Any]:
     if stock.market not in {"sh", "sz"} or not re.fullmatch(r"\d{6}", stock.code):
         return failed_result(stock, "股票代码无效或无行情数据")
-    limit = max(max(windows) + 20, 80)
+    if str(history_limit).lower() == "all":
+        limit = 5000
+    else:
+        try:
+            limit = max(int(history_limit), max(max(windows) + 20, 80))
+        except (TypeError, ValueError):
+            limit = 5000
     bars = source.get_daily_bars(stock.code, stock.market, limit)
     if not bars:
         return failed_result(stock, "股票代码无效或无行情数据")
@@ -240,6 +384,8 @@ def analyze_stock(
         status, diff = ma_position_status(latest.close, ma.get(window), threshold_pct, window)
         ma_status[window] = status
         diff_pct[window] = diff
+    trend_analysis = analyze_trend_retracement_and_break(bars, windows)
+    drawdown_analysis = analyze_drawdown_from_recent_peak(bars)
     remarks: list[str] = []
     if len(bars) < max(windows):
         remarks.append(f"有效交易日不足 {max(windows)} 日")
@@ -255,6 +401,8 @@ def analyze_stock(
         "ma_status": ma_status,
         "diff_pct": diff_pct,
         "overall_status": overall_status(latest.close, ma),
+        "trend_analysis": trend_analysis,
+        "drawdown_analysis": drawdown_analysis,
         "remark": "；".join(remarks),
         "success": True,
     }
@@ -271,6 +419,8 @@ def failed_result(stock: Stock, remark: str) -> dict[str, Any]:
         "ma_status": {},
         "diff_pct": {},
         "overall_status": "数据不足",
+        "trend_analysis": {"summary": "无分析结果", "logs": [remark]},
+        "drawdown_analysis": {"summary": "无分析结果", "log": remark},
         "remark": remark,
         "success": False,
     }
@@ -303,7 +453,7 @@ def render_html(results: list[dict[str, Any]], config: dict[str, Any], output_pa
     .toolbar {{ display: flex; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }}
     input, select {{ height: 36px; padding: 0 10px; border: 1px solid #d1d5db; border-radius: 6px; background: #fff; }}
     .table-wrap {{ overflow-x: auto; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; }}
-    table {{ width: 100%; border-collapse: collapse; min-width: 1180px; }}
+    table {{ width: 100%; border-collapse: collapse; min-width: 1460px; }}
     th, td {{ padding: 10px 8px; border-bottom: 1px solid #e5e7eb; text-align: right; white-space: nowrap; }}
     th {{ position: sticky; top: 0; background: #f9fafb; cursor: pointer; font-size: 13px; }}
     td:first-child, td:nth-child(2), th:first-child, th:nth-child(2) {{ text-align: left; }}
@@ -313,6 +463,10 @@ def render_html(results: list[dict[str, Any]], config: dict[str, Any], output_pa
     .near {{ color: #b45309; font-weight: 600; }}
     .neutral {{ color: #4b5563; font-weight: 600; }}
     .insufficient {{ color: #374151; font-weight: 600; }}
+    details {{ max-width: 360px; }}
+    details summary {{ cursor: pointer; color: #374151; }}
+    .log-list {{ margin: 8px 0 0; padding-left: 16px; }}
+    .log-list li {{ margin-bottom: 4px; }}
   </style>
 </head>
 <body>
@@ -387,7 +541,7 @@ def render_header(windows: list[int]) -> str:
     items = ["股票代码", "股票名称", "最近交易日", "收盘价"]
     for window in windows:
         items.extend([f"MA{window}", f"MA{window} 状态"])
-    items.extend(["综合状态", "备注"])
+    items.extend(["综合状态", "趋势分析", "极值回撤", "备注"])
     return "<tr>" + "".join(f"<th>{escape(item)}</th>" for item in items) + "</tr>"
 
 
@@ -403,6 +557,19 @@ def render_row(item: dict[str, Any], windows: list[int]) -> str:
         status = item["ma_status"].get(window, "N/A")
         cells.append(td(status, css_class=status_class(status)))
     cells.append(td(item["overall_status"], css_class=status_class(item["overall_status"])))
+    trend = item.get("trend_analysis", {})
+    trend_logs = trend.get("logs", [])
+    trend_html = [f"<div>{escape(trend.get('summary', ''))}</div>"]
+    if trend_logs:
+        log_items = "".join(f"<li>{escape(text)}</li>" for text in trend_logs)
+        trend_html.append(f"<details><summary>展开日志</summary><ul class=\"log-list\">{log_items}</ul></details>")
+    cells.append(td_raw("".join(trend_html)))
+
+    drawdown = item.get("drawdown_analysis", {})
+    drawdown_html = [f"<div>{escape(drawdown.get('summary', ''))}</div>"]
+    if drawdown.get("log"):
+        drawdown_html.append(f"<details><summary>展开日志</summary><div>{escape(drawdown.get('log'))}</div></details>")
+    cells.append(td_raw("".join(drawdown_html)))
     cells.append(td(item["remark"] or ""))
     row_class = " class=\"error\"" if not item["success"] or item["remark"] else ""
     return f"<tr{row_class} data-status=\"{escape(item['overall_status'])}\">" + "".join(cells) + "</tr>"
@@ -411,6 +578,11 @@ def render_row(item: dict[str, Any], windows: list[int]) -> str:
 def td(value: Any, css_class: str = "") -> str:
     class_attr = f" class=\"{css_class}\"" if css_class else ""
     return f"<td{class_attr}>{escape(value)}</td>"
+
+
+def td_raw(html_value: str, css_class: str = "") -> str:
+    class_attr = f" class=\"{css_class}\"" if css_class else ""
+    return f"<td{class_attr}>{html_value}</td>"
 
 
 def td_number(value: Any) -> str:
@@ -468,12 +640,13 @@ def run(config_path: Path, stocks_path: Path) -> Path:
     source = build_data_source(config)
     windows = [int(item) for item in config["ma_windows"]]
     threshold_pct = float(config["near_threshold_pct"])
+    history_limit = config.get("history_limit", "all")
 
     results: list[dict[str, Any]] = []
     latest_seen: str | None = None
     for stock in stocks:
         try:
-            result = analyze_stock(stock, source, windows, threshold_pct, latest_seen)
+            result = analyze_stock(stock, source, windows, threshold_pct, latest_seen, history_limit)
             if result.get("latest_trade_date"):
                 latest_seen = max(latest_seen or result["latest_trade_date"], result["latest_trade_date"])
         except (URLError, TimeoutError, RuntimeError, ValueError) as exc:
